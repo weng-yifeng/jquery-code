@@ -12,25 +12,33 @@ $(function() {
  */
 $('.num-input, .select').on('input propertychange', function() {
 	
-	var input_1 = $('#input_1').val();
-	// 检测输入是否完整
-	if (input_1 === '') return;
+	var el_result = $('#result');
 
-	var input_2 = $('#input_2').val();
+	var el_input_1  = $('#input_1');
+	var input_1 = el_input_1.val();
 	// 检测输入是否完整
-	if (input_2 === '') return;
+	if (input_1 === '') {
+		el_result.text('');
+		return;
+	}
+
+	var el_input_2 = $('#input_2');
+	var input_2 = el_input_2.val();
+	// 检测输入是否完整
+	if (input_2 === '') {
+		el_result.text('');
+		return;
+	}
 
 	input_1 = Number(input_1);
 	// 检测是否符合规定长度
-	checkVal(input_1, function(data) {
-		if (!data) return;
-	});
+	var check = checkVal(input_1, el_input_1);
+	if (!check) return;
 
 	input_2 = Number(input_2);
 	// 检测是否符合规定长度
-	checkVal(input_2, function(data) {
-		if (!data) return;
-	});	
+	check = checkVal(input_2, el_input_2);
+	if (!check) return;	
 	
 	var sym = $('#select').val();
 	
@@ -56,7 +64,7 @@ $('.num-input, .select').on('input propertychange', function() {
 			return;
 	} 
 
-	$('#result').text(result);
+	el_result.text(result);
 
 });
 
@@ -87,20 +95,20 @@ $('#reset').on('click', function() {
  * 处理输入值
  * 
  * @param {string} val 输入值
- * @param {function} callback 回调函数
+ * @param {object} el DOM 节点，数值输入框
+ * @return {boolean} 检测是否通过
  */
-function checkVal(val, callback) {
+function checkVal(val, el) {
 	var check = checkNum(val);
 	if (!check) {
 		alertMsg({
 			content: com_name + '：输入超出范围',
 			type: 'error'
 		});
-		$('#input_1').val(subNumber(limit_long, val));
+		el.val(subNumber(limit_long, val));
 	}
-	callback(check);
+	return check;
 }
-
 
 /**
  * 数字删减
